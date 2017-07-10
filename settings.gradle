@@ -1,1 +1,1 @@
-include ':app', ':libDaumMapAndroid'
+include ':app', ':libDaumMapAndroid', ':json_simple'

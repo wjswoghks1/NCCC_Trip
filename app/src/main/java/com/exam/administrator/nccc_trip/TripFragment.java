@@ -63,6 +63,8 @@ public class TripFragment extends Fragment {
         items = new ArrayList();
         layoutManager = new LinearLayoutManager(view.getContext());
 
+        adapter = new TourAdapter(items, view.getContext());
+        recyclerView.setAdapter(adapter);
 
 
         recyclerView.setLayoutManager(layoutManager);
@@ -161,8 +163,6 @@ public class TripFragment extends Fragment {
         try{
             t.join();
             Log.i("eeeeeeeeeeeeee",items.get(0).toString());
-            adapter = new TourAdapter(items, view.getContext());
-            recyclerView.setAdapter(adapter);
         }catch (Exception ee){
             ee.printStackTrace();
         }

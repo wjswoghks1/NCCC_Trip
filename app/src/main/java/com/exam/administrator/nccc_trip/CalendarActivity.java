@@ -1,9 +1,11 @@
 package com.exam.administrator.nccc_trip;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.WidgetContainer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.style.ForegroundColorSpan;
@@ -28,12 +30,16 @@ import java.util.List;
 
 public class CalendarActivity extends AppCompatActivity {
 
+
+    MaterialCalendarView tourCalendarView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        MaterialCalendarView tourCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
+        tourCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
+
 
         OneDayDecorator oneDayDecorator = new OneDayDecorator();
 
@@ -47,7 +53,8 @@ public class CalendarActivity extends AppCompatActivity {
         tourCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                Toast.makeText(CalendarActivity.this, ""+date, Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(CalendarActivity.this,ScheduleActivity.class);
+                startActivity(i);
             }
         });
 
@@ -55,6 +62,9 @@ public class CalendarActivity extends AppCompatActivity {
                 new SundayDecorator(),
                 new SaturdayDecorator(),
                 oneDayDecorator);
+
+
+        tourCalendarView.addDecorator(new tourDecorator());
 
         ApiSimulator.execute(new Runnable() {
             @Override
@@ -64,6 +74,29 @@ public class CalendarActivity extends AppCompatActivity {
         });
 
 
+
+
+    }
+
+    public class tourDecorator implements DayViewDecorator {
+
+        private final Calendar calendar = Calendar.getInstance();
+
+        public tourDecorator() {
+        }
+
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            day.copyTo(calendar);
+            int weekDay = calendar.get(Calendar.DAY_OF_YEAR);
+            return weekDay == 20170712;
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.addSpan(new ForegroundColorSpan(Color.GREEN));
+
+        }
     }
 
     public class SundayDecorator implements DayViewDecorator {
@@ -103,6 +136,7 @@ public class CalendarActivity extends AppCompatActivity {
         @Override
         public void decorate(DayViewFacade view) {
             view.addSpan(new ForegroundColorSpan(Color.BLUE));
+
         }
     }
 
@@ -163,8 +197,11 @@ public class CalendarActivity extends AppCompatActivity {
                 return;
             }
 
-            tour.addDecorator(new EventDecorator(Color.RED, calendarDays));
+
         }
+
+
+
     }
 
 

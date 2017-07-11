@@ -74,88 +74,88 @@ public class TripFragment extends Fragment {
             @Override
             public void run() {
 
-                try {
-                    URL url = new URL("http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey="+apiKey+"&contentTypeId=12&areaCode=33&sigunguCode=11&cat1=A01&cat2=A0101&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=12&pageNo=1&_type=json");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setDefaultUseCaches(false);
-                    conn.setDoInput(true);
-                    conn.setDoOutput(false);
-                    conn.setRequestMethod("GET");
+            try {
+                URL url = new URL("http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey="+apiKey+"&contentTypeId=12&areaCode=33&sigunguCode=11&cat1=A01&cat2=A0101&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=12&pageNo=1&_type=json");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDefaultUseCaches(false);
+                conn.setDoInput(true);
+                conn.setDoOutput(false);
+                conn.setRequestMethod("GET");
 
-                    if (conn != null) {
-                        conn.setConnectTimeout(10000);
-                        conn.setUseCaches(false);
+                if (conn != null) {
+                    conn.setConnectTimeout(10000);
+                    conn.setUseCaches(false);
 
-                        if (conn.getResponseCode() >= 200 || conn.getResponseCode() < 300 ) { //접속 잘 되었는지 안되었는지 파악
-                            Log.i(TAG, "ii1");
-                            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8")); // InputStreamReader로 가져온다음 Buffer에 넣으면 이상하게 에러가 남, 그냥 바로 넣을것.
-                            Log.i(TAG, "ii2");
-                            for(;;){
-                                String buf = "";
-                                buf = br.readLine();
-                                StringBuffer sb = new StringBuffer();
-                                sb.append(buf);
-                                Log.i(TAG, buf);
-                                if (buf == null) {
-                                    Log.i(TAG, "break");
-                                    break;
-                                }
-                                JSONObject result = new JSONObject(buf);
-                                JSONArray results = result.getJSONObject("response").getJSONObject("body").getJSONObject("items").getJSONArray("item"); //가장 큰 테두리부터 갈라갈라 가져오기
-                                Log.i(TAG, "ii4");
+                    if (conn.getResponseCode() >= 200 || conn.getResponseCode() < 300 ) { //접속 잘 되었는지 안되었는지 파악
+                        Log.i(TAG, "ii1");
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8")); // InputStreamReader로 가져온다음 Buffer에 넣으면 이상하게 에러가 남, 그냥 바로 넣을것.
+                        Log.i(TAG, "ii2");
+                        for(;;){
+                            String buf = "";
+                            buf = br.readLine();
+                            StringBuffer sb = new StringBuffer();
+                            sb.append(buf);
+                            Log.i(TAG, buf);
+                            if (buf == null) {
+                                Log.i(TAG, "break");
+                                break;
+                            }
+                            JSONObject result = new JSONObject(buf);
+                            JSONArray results = result.getJSONObject("response").getJSONObject("body").getJSONObject("items").getJSONArray("item"); //가장 큰 테두리부터 갈라갈라 가져오기
+                            Log.i(TAG, "ii4");
 
-                                for (int i=0;i<results.length(); i++){
+                            for (int i=0;i<results.length(); i++){
 
-                                    try{
-                                        JSONObject json = results.getJSONObject(i);
-                                        Log.i(TAG, "ii6");
-                                        name = json.getString("title");
-                                        adress = json.getString("addr1");
-                                        Log.e("d33333fd",name);
-                                        Log.e("33333dfd", adress);
-                                        imgUrl = json.getString("firstimage");
-                                        URL imgurl = new URL(imgUrl);
-                                        HttpURLConnection imgConn = (HttpURLConnection) imgurl.openConnection();
-                                        imgConn.setDoInput(true);
-                                        imgConn.connect();
+                                try{
+                                    JSONObject json = results.getJSONObject(i);
+                                    Log.i(TAG, "ii6");
+                                    name = json.getString("title");
+                                    adress = json.getString("addr1");
+                                    Log.e("d33333fd",name);
+                                    Log.e("33333dfd", adress);
+                                    imgUrl = json.getString("firstimage");
+                                    URL imgurl = new URL(imgUrl);
+                                    HttpURLConnection imgConn = (HttpURLConnection) imgurl.openConnection();
+                                    imgConn.setDoInput(true);
+                                    imgConn.connect();
 
-                                        InputStream is = imgConn.getInputStream();
-                                        bmimg = BitmapFactory.decodeStream(is);
-                                        items.add(new TourItem(name, adress, "123.4" + "km", bmimg, R.drawable.first_medal));
-
-
+                                    InputStream is = imgConn.getInputStream();
+                                    bmimg = BitmapFactory.decodeStream(is);
+                                    items.add(new TourItem(name, adress, "123.4" + "km", bmimg, R.drawable.first_medal));
 
 
-                                    }
-                                    catch (Exception ee){
-                                        JSONObject json = results.getJSONObject(i);
-                                        Log.i(TAG, "NO image");
-                                        name = json.getString("title");
-                                        adress = json.getString("addr1");
-                                        items.add(new TourItem(name, adress, "123.4" + "km", null, R.drawable.first_medal));
-
-
-                                    }
 
 
                                 }
+                                catch (Exception ee){
+                                    JSONObject json = results.getJSONObject(i);
+                                    Log.i(TAG, "NO image");
+                                    name = json.getString("title");
+                                    adress = json.getString("addr1");
+                                    items.add(new TourItem(name, adress, "123.4" + "km", null, R.drawable.first_medal));
+
+
+                                }
+
 
                             }
-                            br.close();
+
                         }
-                        conn.disconnect();
+                        br.close();
                     }
+                    conn.disconnect();
                 }
-                catch(Exception e){
-                    try{
+            }
+            catch(Exception e){
+                try{
 
-                    }
-                    catch (Exception ee){
-
-                    }
-                    Log.e(TAG, "ii7");
-                    Log.w(TAG, e.getMessage());
                 }
+                catch (Exception ee){
+
+                }
+                Log.e(TAG, "ii7");
+                Log.w(TAG, e.getMessage());
+            }
 
             }
         });

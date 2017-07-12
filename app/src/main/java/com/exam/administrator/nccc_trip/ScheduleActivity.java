@@ -195,7 +195,7 @@ public class ScheduleActivity extends AppCompatActivity {
                                                                 adress = json1.getString("addr1");
                                                                 Log.e("d33333fd", name);
                                                                 Log.e("33333dfd", adress);
-                                                                break;
+                                                                break;  
                                                             }
 
                                                         }

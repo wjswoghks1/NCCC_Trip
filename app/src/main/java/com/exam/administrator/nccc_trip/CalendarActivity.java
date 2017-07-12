@@ -82,38 +82,39 @@ public class CalendarActivity extends AppCompatActivity {
                 int weekMonth = calendar.get(Calendar.MONTH) + 1;
                 int weekDay = calendar.get(Calendar.DATE);
                 Log.e("&&&&", ""+weekYear+weekMonth+weekDay);
-                i.putExtra("year", weekYear);
-                i.putExtra("month", weekMonth);
-                i.putExtra("day", weekDay);
-                startActivity(i);
-            }
-        });
+                            i.putExtra("year", weekYear);
+                            i.putExtra("month", weekMonth);
+                            i.putExtra("day", weekDay);
 
-        tourCalendarView.addDecorators(
-                new SundayDecorator(),
-                new SaturdayDecorator(),
-                oneDayDecorator);
+                            startActivity(i);
+                        }
+                });
 
-
-
+                tourCalendarView.addDecorators(
+                        new SundayDecorator(),
+                        new SaturdayDecorator(),
+                        oneDayDecorator);
 
 
-        //final Dbload insertScehdule = new Dbload();
-        final String id_client = getDeviceId();
 
-        final Handler handler = new Handler() {
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 1:
-                        try {
-                            String highlightDay = (String) msg.obj;
-                            //String fdfd1 = insertScehdule.execute(id_client, title, "2017", "07", "13", "06").get();
-                            Log.e("&&&&", highlightDay);
-                            String[] arr = highlightDay.split("/");
-                            int year  = Integer.parseInt(arr[0]);
-                            int month  = Integer.parseInt(arr[1]);
-                            int day  = Integer.parseInt(arr[2]);
-                            int time  = Integer.parseInt(arr[3]);
+
+
+                //final Dbload insertScehdule = new Dbload();
+                final String id_client = getDeviceId();
+
+                final Handler handler = new Handler() {
+                    public void handleMessage(Message msg) {
+                        switch (msg.what) {
+                            case 1:
+                                try {
+                                    String highlightDay = (String) msg.obj;
+                                    //String fdfd1 = insertScehdule.execute(id_client, title, "2017", "07", "13", "06").get();
+                                    Log.e("&&&&", highlightDay);
+                                    String[] arr = highlightDay.split("/");
+                                    int year  = Integer.parseInt(arr[0]);
+                                    int month  = Integer.parseInt(arr[1]);
+                                    int day  = Integer.parseInt(arr[2]);
+                                    int time  = Integer.parseInt(arr[3]);
 
                             tourCalendarView.addDecorator(new tourDecorator(year, month, day));
 
@@ -122,10 +123,7 @@ public class CalendarActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         break;
-                    case 2:
-                        String adress = (String) msg.obj;
 
-                        break;
                 }
             }
         };
@@ -198,8 +196,8 @@ public class CalendarActivity extends AppCompatActivity {
 
             }
         });
-
         calendarThread.start();
+
 
 
 

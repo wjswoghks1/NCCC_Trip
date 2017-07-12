@@ -3,7 +3,9 @@ package com.exam.administrator.nccc_trip;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -12,8 +14,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView menu;
     ImageView searcher;
     MenuOnClickListner menuListener;
+    LocationManager locationManager;
 
     ImageView calendar;
     ImageView inventory;
@@ -49,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(MainActivity.this,dLayout,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         dLayout.setDrawerListener(toggle);
         toggle.syncState();
-
+        GPSDialog();
         menuListener = new MenuOnClickListner() {
             @Override
             public void onClick(View v) {
@@ -183,5 +189,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         d.show();
+    }
+
+    private void GPSDialog(){
+        LayoutInflater inflater = (LayoutInflater)getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.alert_image, null);
+        ImageView customImg = (ImageView)view.findViewById(R.id.custom_image);
+        TextView custumTitle = (TextView)view.findViewById(R.id.customtitle);
+        custumTitle.setText("무선 네트워크와 GPS을 모두 사용하셔야 정확한 눈치코칭의 서비스가 가능합니다 ! \nGPS를 키시겠습니까?");
+        locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+        AlertDialog.Builder gpsDialog = new AlertDialog.Builder(MainActivity.this);
+        gpsDialog.setView(view);
+        gpsDialog.setPositiveButton("네", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                Intent intent1 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                intent1.addCategory(Intent.CATEGORY_DEFAULT);
+                startActivity(intent1);
+            }
+        }).setNegativeButton("아니요", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                return;
+            }
+        });
+
+
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            //GPS 설정화면으로 이동
+            Log.e("dfdf", "들어왔따 반갑다");
+            gpsDialog.create().show();
+        }
+
     }
 }
